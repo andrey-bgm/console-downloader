@@ -54,7 +54,7 @@ public class Downloader {
     }
 
     private Result download(Map<String, List<String>> linksMap, Options options) {
-        ExecutorService pool = Executors.newFixedThreadPool(options.getThreads());
+        ExecutorService pool = Executors.newFixedThreadPool(options.getThreadNumber());
         List<Callable<Result>> tasks = transformLinksMapToDownloadTasks(linksMap, options);
 
         Result result;

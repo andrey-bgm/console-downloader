@@ -13,13 +13,13 @@ import java.util.regex.Pattern;
 
 public class ArgsParserJCommander implements ArgsParser {
 
-    @Parameter(names = { LINKS_FILE_SHORT, LINKS_FILE_LONG }, required = LINKS_FILE_REQUIRED)
+    @Parameter(names = {LINK_FILE_SHORT, LINK_FILE_LONG}, required = LINK_FILE_REQUIRED)
     private String input;
 
     @Parameter(names = { OUTPUT_DIR_SHORT, OUTPUT_DIR_LONG }, required = OUTPUT_DIR_REQUIRED)
     private String output;
 
-    @Parameter(names = { THREADS_NUMBER_SHORT, THREADS_NUMBER_LONG}, required = THREADS_NUMBER_REQUIRED)
+    @Parameter(names = {THREAD_NUMBER_SHORT, THREAD_NUMBER_LONG}, required = THREAD_NUMBER_REQUIRED)
     private int threads;
 
     @Parameter(names = { SPEED_LIMIT_SHORT, SPEED_LIMIT_LONG }, required = SPEED_LIMIT_REQUIRED,

@@ -6,7 +6,7 @@ public class Options {
 
     private final String linksFile;
     private final String outputDir;
-    private final int threads;
+    private final int threadNumber;
     private final long limit;
     private final boolean verbose;
     private final boolean help;
@@ -14,14 +14,14 @@ public class Options {
     private Options(Builder builder) {
         this.linksFile = Strings.nullToEmpty(builder.linksFile);
         this.outputDir = Strings.nullToEmpty(builder.outputDir);
-        this.threads = builder.threads == 0 ? 1 : builder.threads;
+        this.threadNumber = builder.threadNumber == 0 ? 1 : builder.threadNumber;
         this.limit = builder.limit;
         this.verbose = builder.verbose;
         this.help = builder.help;
     }
 
-    public int getThreads() {
-        return threads;
+    public int getThreadNumber() {
+        return threadNumber;
     }
 
     public long getLimit() {
@@ -47,7 +47,7 @@ public class Options {
     public static class Builder {
         private String linksFile;
         private String outputDir;
-        private int threads;
+        private int threadNumber;
         private long limit;
         private boolean verbose;
         private boolean help;
@@ -62,7 +62,7 @@ public class Options {
         }
 
         public Builder threads(int threads) {
-            this.threads = threads;
+            this.threadNumber = threads;
             return this;
         }
 
