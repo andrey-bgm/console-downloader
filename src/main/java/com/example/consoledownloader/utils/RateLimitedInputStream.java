@@ -1,4 +1,4 @@
-package com.example.consoledownloader.lib;
+package com.example.consoledownloader.utils;
 
 import com.google.common.util.concurrent.RateLimiter;
 

@@ -1,7 +1,5 @@
 package com.example.consoledownloader.argsparser;
 
-import com.example.consoledownloader.lib.Options;
-
 public interface ArgsParser {
     Options parse(String... args) throws ArgsParseException;
 

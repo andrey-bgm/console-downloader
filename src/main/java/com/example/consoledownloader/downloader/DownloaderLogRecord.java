@@ -1,4 +1,4 @@
-package com.example.consoledownloader.lib;
+package com.example.consoledownloader.downloader;
 
 public class DownloaderLogRecord {
     private final Type type;

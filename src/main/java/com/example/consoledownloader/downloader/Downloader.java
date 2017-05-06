@@ -1,8 +1,7 @@
 package com.example.consoledownloader.downloader;
 
-import com.example.consoledownloader.lib.DownloaderLogRecord;
-import com.example.consoledownloader.lib.Options;
-import com.example.consoledownloader.lib.RateLimitedInputStream;
+import com.example.consoledownloader.argsparser.Options;
+import com.example.consoledownloader.utils.RateLimitedInputStream;
 import com.google.common.util.concurrent.RateLimiter;
 
 import java.io.IOException;

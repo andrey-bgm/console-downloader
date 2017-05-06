@@ -5,9 +5,9 @@ import com.example.consoledownloader.argsparser.ArgsParser;
 import com.example.consoledownloader.argsparser.ArgsParserJCommander;
 import com.example.consoledownloader.downloader.DefaultLinkDownloader;
 import com.example.consoledownloader.downloader.Downloader;
-import com.example.consoledownloader.lib.DownloaderLogRecord;
-import com.example.consoledownloader.lib.ElapsedTimeFormatter;
-import com.example.consoledownloader.lib.Options;
+import com.example.consoledownloader.downloader.DownloaderLogRecord;
+import com.example.consoledownloader.utils.ElapsedTimeFormatter;
+import com.example.consoledownloader.argsparser.Options;
 
 import java.time.Duration;
 import java.time.Instant;

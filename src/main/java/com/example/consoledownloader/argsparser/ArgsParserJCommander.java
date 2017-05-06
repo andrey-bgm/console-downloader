@@ -4,7 +4,6 @@ import com.beust.jcommander.IStringConverter;
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.ParameterException;
-import com.example.consoledownloader.lib.Options;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -70,7 +69,7 @@ public class ArgsParserJCommander implements ArgsParser {
 
             if (!matcher.matches()) {
                 throw new ParameterException(String.format(
-                    "Value \"%s\" doesn't match the speed limit pattern", value));
+                    "The value \"%s\" doesn't match the speed limit pattern", value));
             }
 
             String rawLimit = matcher.group(1);

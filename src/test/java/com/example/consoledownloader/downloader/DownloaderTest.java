@@ -1,7 +1,6 @@
 package com.example.consoledownloader.downloader;
 
-import com.example.consoledownloader.lib.DownloaderLogRecord;
-import com.example.consoledownloader.lib.Options;
+import com.example.consoledownloader.argsparser.Options;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -16,11 +15,13 @@ import java.util.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class DownloaderTest {
+
     private static final String LINK_PREFIX = "http://localhost:8080/";
     private static final String ROOT_DIR_PREFIX = "consoledowloader";
     private static final String DOWNLOAD_DIR_NAME = "download";
     private static final String LINKS_FILE_NAME = "links";
     private static final int TIMEOUT = 10 * 1000;
+
     private Path rootDirPath;
     private Path downloadDirPath;
     private Path linksFilePath;
@@ -112,12 +113,12 @@ public class DownloaderTest {
         final int byteCount = limit * 3;
         final long expectedSeconds = 3L;
 
-        assertSuccessLimitDownload(limit, byteCount, expectedSeconds);
+        assertSuccessDownloadWithSpeedLimit(limit, byteCount, expectedSeconds);
     }
 
     @Test(timeout = TIMEOUT)
     public void downloadWithTooSmallSpeedLimit() throws Exception {
-        assertSuccessLimitDownload(1, 10, 0);
+        assertSuccessDownloadWithSpeedLimit(1, 10, 0);
     }
 
     @Test
@@ -146,7 +147,7 @@ public class DownloaderTest {
         assertSuccessfulDownloadResult(links, downloadResult);
     }
 
-    private void assertSuccessLimitDownload(int limit, int byteCount, long expectedSeconds) throws Exception {
+    private void assertSuccessDownloadWithSpeedLimit(int limit, int byteCount, long expectedSeconds) throws Exception {
         List<Source> sources = Collections.singletonList(
             new Source("src.txt", new byte[byteCount])
         );
@@ -214,10 +215,11 @@ public class DownloaderTest {
         });
     }
 
-    private void assertLog(List<DownloaderLogRecord> log, Map<DownloaderLogRecord.Type, Integer> recordTypes) {
+    private void assertLog(List<DownloaderLogRecord> actualLog,
+                           Map<DownloaderLogRecord.Type, Integer> expectedRecordTypes) {
         Arrays.stream(DownloaderLogRecord.Type.values()).forEach(type -> {
-            long expectedCount = recordTypes.getOrDefault(type, 0);
-            long actualCount = log.stream()
+            long expectedCount = expectedRecordTypes.getOrDefault(type, 0);
+            long actualCount = actualLog.stream()
                 .filter(record -> record.getType() == type)
                 .count();
             assertThat(actualCount).as(String.format("Records count with the type %s", type))

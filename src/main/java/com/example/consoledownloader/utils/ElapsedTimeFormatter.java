@@ -1,4 +1,4 @@
-package com.example.consoledownloader.lib;
+package com.example.consoledownloader.utils;
 
 import java.time.Duration;
 

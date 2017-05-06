@@ -1,6 +1,5 @@
 package com.example.consoledownloader.argsparser;
 
-import com.example.consoledownloader.lib.Options;
 import org.junit.Before;
 import org.junit.Test;
 
