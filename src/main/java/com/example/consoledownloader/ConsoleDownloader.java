@@ -21,11 +21,13 @@ public class ConsoleDownloader {
         } catch (ArgsParseException e) {
             System.out.printf("Invalid options: %s%n", e.getMessage());
             System.out.printf("Try 'console-downloader %s' for more information%n", ArgsParser.HELP_LONG);
+
             return;
         }
 
         if (options.isHelpNeeded()) {
             System.out.println(createArgsParser().usage());
+
             return;
         }
 

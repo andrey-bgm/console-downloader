@@ -97,6 +97,7 @@ public class Downloader {
     private Function<InputStream, InputStream> makeInputWrapper(Options options) {
         if (options.getLimit() > 0) {
             RateLimiter rateLimiter = RateLimiter.create(options.getLimit());
+
             return in -> new RateLimitedInputStream(in, rateLimiter);
         } else {
             return Function.identity();
@@ -171,6 +172,7 @@ public class Downloader {
         DownloaderLogRecord logRecord = DownloaderLogRecord.create(
             DownloaderLogRecord.Type.SYSTEM_ERROR,
             String.format(msgTemplate, e.getMessage()));
+
         return new Result(0, Collections.singletonList(logRecord));
     }
 
@@ -213,6 +215,7 @@ public class Downloader {
         private Result addResult(Result another) {
             this.byteCount += another.byteCount;
             this.log.addAll(another.log);
+
             return this;
         }
     }

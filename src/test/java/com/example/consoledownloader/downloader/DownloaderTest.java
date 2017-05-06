@@ -16,7 +16,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class DownloaderTest {
 
-    private static final String LINK_PREFIX = "http://localhost:8080/";
+    private static final String LINK_PREFIX = "http://example.com/";
     private static final String ROOT_DIR_PREFIX = "consoledowloader";
     private static final String DOWNLOAD_DIR_NAME = "download";
     private static final String LINKS_FILE_NAME = "links";
@@ -33,12 +33,12 @@ public class DownloaderTest {
 
     @Before
     public void setUp() throws Exception {
-        this.sources = Arrays.asList(
+        sources = Arrays.asList(
             new Source("src_file1.txt","hello world\n"),
             new Source("src_file2.txt","line1: word1 word2 123\nline2: word3 word4 word5\n"),
             new Source("src_file3.txt","another file's content\n")
         );
-        this.links = Arrays.asList(
+        links = Arrays.asList(
             new LinkDescription("file1.txt", sources.get(0)),
             new LinkDescription("file2.txt", sources.get(1)),
             new LinkDescription("file3.txt", sources.get(2)),
@@ -46,21 +46,22 @@ public class DownloaderTest {
             new LinkDescription("file3_copy1.txt", sources.get(2)),
             new LinkDescription("file3_copy2.txt", sources.get(2))
         );
-        this.wrongLink = new LinkDescription("file0.txt", new Source("file0.txt", ""));
+        wrongLink = new LinkDescription("file0.txt", new Source("file0.txt", ""));
 
-        this.rootDirPath = Files.createTempDirectory(ROOT_DIR_PREFIX);
-        this.downloadDirPath = Paths.get(this.rootDirPath.toString(), DOWNLOAD_DIR_NAME);
-        this.linksFilePath = Paths.get(this.rootDirPath.toString(), LINKS_FILE_NAME);
+        rootDirPath = Files.createTempDirectory(ROOT_DIR_PREFIX);
+        downloadDirPath = Paths.get(this.rootDirPath.toString(), DOWNLOAD_DIR_NAME);
+        linksFilePath = Paths.get(this.rootDirPath.toString(), LINKS_FILE_NAME);
 
-        this.downloader = new Downloader(link -> getFileContentByLink(sources, link));
+        downloader = new Downloader(link -> getFileContentByLink(sources, link));
     }
 
     @After
     public void deleteTempDirectory() throws Exception {
-        Files.walkFileTree(this.rootDirPath, new SimpleFileVisitor<Path>() {
+        Files.walkFileTree(rootDirPath, new SimpleFileVisitor<Path>() {
             @Override
             public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
                 Files.deleteIfExists(file);
+
                 return FileVisitResult.CONTINUE;
             }
 
@@ -68,6 +69,7 @@ public class DownloaderTest {
             public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
                 if (exc == null) {
                     Files.deleteIfExists(dir);
+
                     return FileVisitResult.CONTINUE;
                 }
 
@@ -83,21 +85,21 @@ public class DownloaderTest {
 
     @Test
     public void downloadOneLink() throws Exception {
-        LinkDescription linkDescription = this.links.get(0);
+        LinkDescription linkDescription = links.get(0);
         assertSuccessfulDownload(Collections.singletonList(linkDescription), 1);
     }
 
     @Test
     public void downloadAllLinks() throws Exception {
-        assertSuccessfulDownload(this.links, 2);
+        assertSuccessfulDownload(links, 2);
     }
 
     @Test
     public void downloadOneLinkWhenTargetFileAlreadyExists() throws Exception {
-        LinkDescription linkDescription = this.links.get(0);
+        LinkDescription linkDescription = links.get(0);
 
-        Files.createDirectories(this.downloadDirPath);
-        Path filePath = Paths.get(this.downloadDirPath.toString(), linkDescription.fileName);
+        Files.createDirectories(downloadDirPath);
+        Path filePath = Paths.get(downloadDirPath.toString(), linkDescription.fileName);
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath.toString()))) {
             writer.write("preexisted file's content");
             writer.newLine();
@@ -128,13 +130,13 @@ public class DownloaderTest {
 
     @Test
     public void failedDownloadBecauseThereIsFileNamedTargetDir() throws Exception {
-        Files.createFile(this.downloadDirPath);
+        Files.createFile(downloadDirPath);
         assertFailedDownloadWithOneError(DownloaderLogRecord.Type.SYSTEM_ERROR);
     }
 
     @Test
     public void failedDownloadBecauseWrongLink() throws Exception {
-        writeLinksToFile(Collections.singletonList(this.wrongLink));
+        writeLinksToFile(Collections.singletonList(wrongLink));
         assertFailedDownloadWithOneError(DownloaderLogRecord.Type.DOWNLOAD_FAIL);
     }
 
@@ -142,7 +144,7 @@ public class DownloaderTest {
         writeLinksToFile(links);
 
         Options options = makeDefaultOptions().threads(threadCount).build();
-        Downloader.Result downloadResult = this.downloader.download(options);
+        Downloader.Result downloadResult = downloader.download(options);
 
         assertSuccessfulDownloadResult(links, downloadResult);
     }
@@ -173,12 +175,9 @@ public class DownloaderTest {
 
     private void assertSuccessfulDownloadResult(List<LinkDescription> links,
                                                 Downloader.Result downloadResult) throws Exception {
-        long expectedByteCount = links.stream()
-            .map(LinkDescription::getSrc)
-            .distinct()
-            .mapToLong(Source::calcSize)
-            .sum();
-        assertThat(Files.isDirectory(this.downloadDirPath)).isTrue();
+        long expectedByteCount = calcUniqueLinksSize(links);
+
+        assertThat(Files.isDirectory(downloadDirPath)).isTrue();
         assertThat(downloadResult.getByteCount()).isEqualTo(expectedByteCount);
         assertDownloadedFilesExist(links);
 
@@ -187,9 +186,17 @@ public class DownloaderTest {
         assertLog(downloadResult.getLog(), expectedRecordTypes);
     }
 
+    private long calcUniqueLinksSize(List<LinkDescription> links) {
+        return links.stream()
+            .map(LinkDescription::getSrc)
+            .distinct()
+            .mapToLong(Source::calcSize)
+            .sum();
+    }
+
     private void assertFailedDownloadWithOneError(DownloaderLogRecord.Type logRecordType) {
         Options options = makeDefaultOptions().build();
-        Downloader.Result downloadResult = this.downloader.download(options);
+        Downloader.Result downloadResult = downloader.download(options);
         assertThat(downloadResult.getByteCount()).isEqualTo(0L);
 
         Map<DownloaderLogRecord.Type, Integer> expectedRecordTypes = Collections.singletonMap(logRecordType, 1);
@@ -198,7 +205,7 @@ public class DownloaderTest {
 
     private void assertDownloadedFilesExist(List<LinkDescription> links) throws Exception {
         links.forEach(description -> {
-            Path filePath = Paths.get(this.downloadDirPath.toString(), description.fileName);
+            Path filePath = Paths.get(downloadDirPath.toString(), description.fileName);
             assertThat(Files.isRegularFile(filePath))
                 .as(String.format("The file exists %s", description.fileName))
                 .isTrue();
@@ -277,7 +284,7 @@ public class DownloaderTest {
         }
 
         String makeLinkString() {
-            return this.src.link + " " + this.fileName;
+            return src.link + " " + fileName;
         }
 
         Source getSrc() {
