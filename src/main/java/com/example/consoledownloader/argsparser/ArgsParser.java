@@ -11,8 +11,8 @@ public interface ArgsParser {
             + "  -f, --link-file=FILE                a file with links for download" + newLine
             + "  -o, --output-dir=DIRECTORY          an output directory for downloaded files" + newLine
             + "  -n, --thread-number=NUMBER          the number of threads" + newLine
-            + "  -l, --speed-limit                   the download speed limit in bytes, kilobytes (10k)" + newLine
-            + "                                      or megabytes (10m)" + newLine
+            + "  -l, --speed-limit                   the download speed limit in bytes, kilobytes (e.g., 10k)" + newLine
+            + "                                      or megabytes (e.g., 10m)" + newLine
             + "  -v, --verbose                       turn on the verbose mode" + newLine
             + "  -h, --help                          show help" + newLine
             + newLine
