@@ -86,6 +86,7 @@ public class DownloaderTest {
     @Test
     public void downloadOneLink() throws Exception {
         LinkDescription linkDescription = links.get(0);
+
         assertSuccessfulDownload(Collections.singletonList(linkDescription), 1);
     }
 
@@ -119,24 +120,26 @@ public class DownloaderTest {
     }
 
     @Test(timeout = TIMEOUT)
-    public void downloadWithTooSmallSpeedLimit() throws Exception {
+    public void downloadWithTooSmallSpeedLimitShouldWork() throws Exception {
         assertSuccessDownloadWithSpeedLimit(1, 10, 0);
     }
 
     @Test
-    public void failedDownloadBecauseThereIsNoLinkFile() throws Exception {
+    public void downloadWhenThereIsNoLinkFile() throws Exception {
         assertFailedDownloadWithOneError(DownloaderLogRecord.Type.SYSTEM_ERROR);
     }
 
     @Test
-    public void failedDownloadBecauseThereIsFileNamedTargetDir() throws Exception {
+    public void downloadWhenThereIsFileNamedTargetDir() throws Exception {
         Files.createFile(downloadDirPath);
+
         assertFailedDownloadWithOneError(DownloaderLogRecord.Type.SYSTEM_ERROR);
     }
 
     @Test
-    public void failedDownloadBecauseWrongLink() throws Exception {
+    public void downloadWhenThereIsWrongLink() throws Exception {
         writeLinksToFile(Collections.singletonList(wrongLink));
+
         assertFailedDownloadWithOneError(DownloaderLogRecord.Type.DOWNLOAD_FAIL);
     }
 
